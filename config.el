@@ -131,11 +131,12 @@
 
 
   ;; theme of choice
-
+(add-to-list 'custom-theme-load-path
+             "~/.config/emacs/themes/naga-blue/")
+(load-theme 'naga-blue t)
 (use-package gruber-darker-theme
   :ensure t
-  :config
-  (load-theme 'gruber-darker t))
+  :config)
 
 (menu-bar-mode -1)
     (tool-bar-mode -1)
@@ -207,54 +208,64 @@
   (desktop-save-mode 1))
 
 ;; Sync Emacs's PATH with your shell's PATH
-  ;; This is CRUCIAL for LSP to find the language servers.
-  (use-package exec-path-from-shell
-    :ensure t
-    :if (memq window-system '(mac ns x))
-    :config
-    (exec-path-from-shell-initialize))
-
-
-
-(use-package lsp-mode
-  :ensure t
-  :commands lsp-deferred
-  :hook (prog-mode . lsp-deferred)
-  :init
-  (setq lsp-keymap-prefix "C-c l")
-  (setq lsp-auto-guess-root t)
-  :config
-  (lsp-enable-which-key-integration t))
-
-
-
-
-  ;; UI enhancements for LSP, like pop-up docs and sideline info
-  (use-package lsp-ui
-    :ensure t
-    :commands lsp-ui-mode
-    :after lsp-mode
-    :hook (lsp-mode . lsp-ui-mode)
-    :custom
-    (lsp-ui-doc-position 'bottom))
-
-  ;; Installs and manages language servers automatically
-  (use-package lsp-pyright
+    ;; This is CRUCIAL for LSP to find the language servers.
+    (use-package exec-path-from-shell
       :ensure t
-      :hook (python-mode . (lambda ()
-                            (require 'lsp-pyright)
-                            (lsp-deferred))))
+      :if (memq window-system '(mac ns x))
+      :config
+      (exec-path-from-shell-initialize))
 
-  ;; Completion framework that will show suggestions from the LSP
-  (use-package company
+
+
+  (use-package lsp-mode
     :ensure t
-    :after lsp-mode
-    :hook (lsp-mode . company-mode)
-    :bind (:map company-active-map
-           ("<tab>" . company-complete-selection))
-    :custom
-    (company-minimum-prefix-length 1)
-    (company-idle-delay 0.0))
+    :commands lsp-deferred
+    :hook (prog-mode . lsp-deferred)
+    :init
+    (setq lsp-keymap-prefix "C-c l")
+    (setq lsp-auto-guess-root t)
+    :config
+    (lsp-enable-which-key-integration t))
+
+
+
+
+    ;; UI enhancements for LSP, like pop-up docs and sideline info
+    (use-package lsp-ui
+      :ensure t
+      :commands lsp-ui-mode
+      :after lsp-mode
+      :hook (lsp-mode . lsp-ui-mode)
+      :custom
+      (lsp-ui-doc-position 'bottom))
+
+    ;; Installs and manages language servers automatically
+    (use-package lsp-pyright
+        :ensure t
+        :hook (python-mode . (lambda ()
+                              (require 'lsp-pyright)
+                              (lsp-deferred))))
+
+    ;; Completion framework that will show suggestions from the LSP
+    (use-package company
+      :ensure t
+      :after lsp-mode
+      :hook (lsp-mode . company-mode)
+      :bind (:map company-active-map
+             ("<tab>" . company-complete-selection))
+      :custom
+      (company-minimum-prefix-length 1)
+      (company-idle-delay 0.0))
+
+
+
+  ;; slow stuff down hopefully 
+(setq lsp-idle-delay 1.0)
+(setq lsp-enable-file-watchers nil)
+(setq lsp-ui-doc-enable nil)
+(setq lsp-ui-sideline-enable nil)
+(setq company-idle-delay 0.5)
+(setq company-minimum-prefix-length 2)
 
 (use-package smartparens
   :ensure t
@@ -264,3 +275,15 @@
          (markdown-mode . smartparens-mode))
   :config
   (require 'smartparens-config))
+
+(use-package dirvish
+  :ensure t
+  :init
+  (setq dirvish-attributes
+        '(file-size
+          subtree-state
+          collapse
+          vc-state
+          git-msg
+          file-time))
+  (dirvish-override-dired-mode))

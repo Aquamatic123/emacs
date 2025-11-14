@@ -298,7 +298,7 @@
 
 
 
-  
+
     ;; UI enhancements for LSP, like pop-up docs and sideline info
     (use-package lsp-ui
       :ensure t
@@ -325,7 +325,19 @@
       :custom
       (company-minimum-prefix-length 1)
       (company-idle-delay 0.0))
+
+
+
+  ;; slow stuff down hopefully 
+(setq lsp-idle-delay 1.0)
+(setq lsp-enable-file-watchers nil)
+(setq lsp-ui-doc-enable nil)
+(setq lsp-ui-sideline-enable nil)
+(setq company-idle-delay 0.5)
+(setq company-minimum-prefix-length 2)
+
 #+end_src
+
 
 * TEXT EDITING
 
@@ -340,6 +352,27 @@
   (require 'smartparens-config))
 
   #+end_src
+
+
+
+
+
+
+* File Explorer
+#+begin_src emacs-lisp
+(use-package dirvish
+  :ensure t
+  :init
+  (setq dirvish-attributes
+        '(file-size
+          subtree-state
+          collapse
+          vc-state
+          git-msg
+          file-time))
+  (dirvish-override-dired-mode))
+
+#+end_src
 
 
 
