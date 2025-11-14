@@ -1,0 +1,17 @@
+# Emacs auto-generated files and directories
+auto-save-list/
+eln-cache/
+elpa/
+elpaca/
+tramp
+url/
+.emacs.desktop
+.lsp-session-v1
+
+# Compiled files
+*.elc
+*.lock
+
+# Backup files
+*~
+
