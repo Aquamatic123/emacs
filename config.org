@@ -168,9 +168,12 @@
 
 
   ;; transparency
-    (set-frame-parameter nil 'alpha-background 92) ; For current frame
-    (add-to-list 'default-frame-alist '(alpha-background . 92)) ; For all new frames henceforth
+    (set-frame-parameter nil 'alpha-background 100) ; For current frame
+    (add-to-list 'default-frame-alist '(alpha-background . 100)) ; For all new frames henceforth
 
+
+  ;; Icons
+    (use-package all-the-icons :ensure t)
 
 
 #+end_src
@@ -277,10 +280,11 @@
 (use-package desktop
   :ensure nil ;; This is a built-in Emacs feature, no need to download
   :config
-  (setq desktop-restore-frames t)
   ;; Actually turn on the mode
   (desktop-save-mode 1))
 #+end_src 
+
+
 
 
 * PROGRAMMING AND LANGUAGE SERVER PROTOCOL (LSP)
@@ -383,6 +387,82 @@
   (dirvish-override-dired-mode))
 
 #+end_src
+
+
+
+* NEOTREE
+
+#+begin_src emacs-lisp
+  (use-package neotree
+    :ensure t
+    :after all-the-icons
+    :init
+    ;; Open NeoTree automatically on startup (optional)
+    ;; (add-hook 'emacs-startup-hook #'neotree-show)
+
+    :config
+    ;; NeoTree width
+    (setq neo-window-width 35)
+
+    ;; Use icons if you have `all-the-icons`
+    (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
+
+    ;; Follow the current file automatically
+    (setq neo-smart-open t)
+
+    ;; Always reuse the same window for NeoTree
+    (setq neo-window-fixed-size t)
+
+    ;; Auto-refresh NeoTree when files change
+    (setq neo-autorefresh t)
+
+    ;; Make NeoTree respect Evil
+    (add-hook 'neotree-mode-hook
+              (lambda ()
+                (evil-normalize-keymaps)))
+
+    ;; Bind a key to toggle NeoTree
+    (evil-define-key 'normal 'global (kbd "C-f") 'neotree-toggle)
+(with-eval-after-load 'neotree
+  (evil-define-key 'normal neotree-mode-map
+    (kbd "RET") 'neotree-enter
+    (kbd "l") 'neotree-enter
+    (kbd "h") 'neotree-select-up-node))
+
+  )
+
+#+end_src
+
+
+
+
+* DASHBOARD
+#+begin_src emacs-lisp
+  (use-package dashboard
+    :ensure t
+    :init
+    ;; Optional settings
+    (setq dashboard-items '((recents   . 5)
+                          (bookmarks . 5)
+                          (projects  . 5)
+                          (agenda    . 5)))
+    ;; ICONS
+    (setq dashboard-set-heading-icons t)
+    (setq dashboard-set-file-icons t)
+    (setq dashboard-display-icons-p t)
+    (setq dashboard-icon-type 'all-the-icons)
+
+
+    (setq dashboard-show-shortcuts nil)
+    (setq dashboard-startup-banner 'logo
+          dashboard-center-content t)
+    :config
+    (dashboard-setup-startup-hook))
+
+#+end_src
+
+
+
 
 
 

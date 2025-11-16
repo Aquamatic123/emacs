@@ -7,7 +7,7 @@ tramp
 url/
 .emacs.desktop
 .lsp-session-v1
-
+recentf
 # Compiled files
 *.elc
 *.lock
