@@ -4,6 +4,15 @@
 #+OPTIONS: toc:2
 
 * IMPORTANT PROGRAMS TO LOAD FIRST
+
+** Garbage Collector Threshold
+#+begin_src emacs-lisp
+(setq gc-cons-threshold (* 100 1024 1024))  ;; 100MB
+(setq gc-cons-percentage 0.6)
+#+end_src
+
+
+
 ** Elpaca Package Manager
 #+begin_src emacs-lisp
         (defvar elpaca-installer-version 0.11)
@@ -343,14 +352,15 @@
 
 
   ;; slow stuff down hopefully 
-(setq lsp-idle-delay 1.0)
-(setq lsp-enable-file-watchers nil)
-(setq lsp-ui-doc-enable nil)
-(setq lsp-ui-sideline-enable nil)
-(setq company-idle-delay 0.5)
-(setq company-minimum-prefix-length 2)
+    (setq lsp-idle-delay 1.0)
+    (setq lsp-enable-file-watchers nil)
+    (setq lsp-ui-doc-enable nil)
+    (setq lsp-ui-sideline-enable nil)
+    (setq company-idle-delay 0.5)
+    (setq company-minimum-prefix-length 2)
 
 #+end_src
+
 
 
 * TEXT EDITING
