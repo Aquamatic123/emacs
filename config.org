@@ -1,120 +1,97 @@
-#+TITLE: Leo's GNU Emacs config
 #+AUTHOR: Leo Rouleau
 #+STARTUP: showeverything
 #+OPTIONS: toc:2
 
 * IMPORTANT PROGRAMS TO LOAD FIRST
 
-** Garbage Collector Threshold
-#+begin_src emacs-lisp
-(setq gc-cons-threshold (* 100 1024 1024))  ;; 100MB
-(setq gc-cons-percentage 0.6)
-#+end_src
 
 
 
 ** Elpaca Package Manager
 #+begin_src emacs-lisp
-        (defvar elpaca-installer-version 0.11)
-      (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
-      (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
-      (defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
-      (defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
-                                    :ref nil :depth 1 :inherit ignore
-                                    :files (:defaults "elpaca-test.el" (:exclude "extensions"))
-                                    :build (:not elpaca--activate-package)))
-      (let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
-             (build (expand-file-name "elpaca/" elpaca-builds-directory))
-             (order (cdr elpaca-order))
-             (default-directory repo))
-        (add-to-list 'load-path (if (file-exists-p build) build repo))
-        (unless (file-exists-p repo)
-          (make-directory repo t)
-          (when (<= emacs-major-version 28) (require 'subr-x))
-          (condition-case-unless-debug err
-              (if-let* ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
-                        ((zerop (apply #'call-process `("git" nil ,buffer t "clone"
-                                                        ,@(when-let* ((depth (plist-get order :depth)))
-                                                            (list (format "--depth=%d" depth) "--no-single-branch"))
-                                                        ,(plist-get order :repo) ,repo))))
-                        ((zerop (call-process "git" nil buffer t "checkout"
-                                              (or (plist-get order :ref) "--"))))
-                        (emacs (concat invocation-directory invocation-name))
-                        ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
-                                              "--eval" "(byte-recompile-directory \".\" 0 'force)")))
-                        ((require 'elpaca))
-                        ((elpaca-generate-autoloads "elpaca" repo)))
-                  (progn (message "%s" (buffer-string)) (kill-buffer buffer))
-                (error "%s" (with-current-buffer buffer (buffer-string))))
-            ((error) (warn "%s" err) (delete-directory repo 'recursive))))
-        (unless (require 'elpaca-autoloads nil t)
-          (require 'elpaca)
-          (elpaca-generate-autoloads "elpaca" repo)
-          (let ((load-source-file-function nil)) (load "./elpaca-autoloads"))))
-      (add-hook 'after-init-hook #'elpaca-process-queues)
-      (elpaca `(,@elpaca-order))
+  (defvar elpaca-installer-version 0.11)
+        (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
+        (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
+        (defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
+        (defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
+                                      :ref nil :depth 1 :inherit ignore
+                                      :files (:defaults "elpaca-test.el" (:exclude "extensions"))
+                                      :build (:not elpaca--activate-package)))
+        (let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
+               (build (expand-file-name "elpaca/" elpaca-builds-directory))
+               (order (cdr elpaca-order))
+               (default-directory repo))
+          (add-to-list 'load-path (if (file-exists-p build) build repo))
+          (unless (file-exists-p repo)
+            (make-directory repo t)
+            (when (<= emacs-major-version 28) (require 'subr-x))
+            (condition-case-unless-debug err
+                (if-let* ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
+                          ((zerop (apply #'call-process `("git" nil ,buffer t "clone"
+                                                          ,@(when-let* ((depth (plist-get order :depth)))
+                                                              (list (format "--depth=%d" depth) "--no-single-branch"))
+                                                          ,(plist-get order :repo) ,repo))))
+                          ((zerop (call-process "git" nil buffer t "checkout"
+                                                (or (plist-get order :ref) "--"))))
+                          (emacs (concat invocation-directory invocation-name))
+                          ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
+                                                "--eval" "(byte-recompile-directory \".\" 0 'force)")))
+                          ((require 'elpaca))
+                          ((elpaca-generate-autoloads "elpaca" repo)))
+                    (progn (message "%s" (buffer-string)) (kill-buffer buffer))
+                  (error "%s" (with-current-buffer buffer (buffer-string))))
+              ((error) (warn "%s" err) (delete-directory repo 'recursive))))
+          (unless (require 'elpaca-autoloads nil t)
+            (require 'elpaca)
+            (elpaca-generate-autoloads "elpaca" repo)
+            (let ((load-source-file-function nil)) (load "./elpaca-autoloads"))))
+        (add-hook 'after-init-hook #'elpaca-process-queues)
+        (elpaca `(,@elpaca-order))
 
+      ;; Install use-package support
+      (elpaca elpaca-use-package
+        ;; Enable use-package :ensure support for Elpaca.
+        (elpaca-use-package-mode))
 
+      ;; ensure evil is installed first (blocks until done)
+      (elpaca evil
+        (use-package evil
+          :demand t
+          :init
+          (setq evil-want-C-u-scroll t)
+          (setq evil-want-integration t)
+          (setq evil-want-keybinding nil)
+          (setq evil-vsplit-window-right t)
+          (setq evil-undo-system 'undo-redo)
+  	(setq evil-split-window-below t)
+  	(setq evil-want-abbrev-mode nil)
+          :config
+          (evil-mode 1)))
 
+      (elpaca evil-collection
+        (use-package evil-collection
+          :after evil
+          :ensure t
+          :config
+          ;; This will initialize evil-collection for all supported packages,
+          ;; including ibuffer. It's the recommended way.
+          (evil-collection-init)))
 
+      (elpaca evil-tutor
+        (use-package evil-tutor
+          :after evil
+          :demand t))
 
-      ;; Install a package via the elpaca macro
-    ;; See the "recipes" section of the manual for more details.
-
-    ;; (elpaca example-package)
-
-    ;; Install use-package support
-    (elpaca elpaca-use-package
-      ;; Enable use-package :ensure support for Elpaca.
-      (elpaca-use-package-mode))
-
-    ;;When installing a package used in the init file itself,
-    ;;e.g. a package which adds a use-package key word,
-    ;;use the :wait recipe keyword to block until that package is installed/configured.
-    ;;For example:
-    ;;(use-package general :ensure (:wait t) :demand t)
-
-    ;; Expands to: (elpaca evil (use-package evil :demand t))
-    ;; ensure evil is installed first (blocks until done)
-    (elpaca evil
-      (use-package evil
-        :demand t
-        :init
-        (setq evil-want-C-u-scroll t)
-        (setq evil-want-integration t)
-        (setq evil-want-keybinding nil)
-        (setq evil-vsplit-window-right t)
-        (setq evil-split-window-below t)
-        :config
-        (evil-mode 1)))
-
-    (elpaca evil-collection
-      (use-package evil-collection
-        :after evil
-        :demand t
-        :config
-        (setq evil-collection-mode-list '(dashboard dired ibuffer))
-        (evil-collection-init)))
-
-    (elpaca evil-tutor
-      (use-package evil-tutor
-        :after evil
-        :demand t))
-
-
-
-
-    ;;Turns off elpaca-use-package-mode current declaration
-    ;;Note this will cause evaluate the declaration immediately. It is not deferred.
-    ;;Useful for configuring built-in emacs features.
-    (use-package emacs :ensure nil :config (setq ring-bell-function #'ignore))
-
-
-
+      ;;Turns off elpaca-use-package-mode current declaration
+      ;;Note this will cause evaluate the declaration immediately. It is not deferred.
+      ;;Useful for configuring built-in emacs features.
+      (use-package emacs :ensure nil :config (setq ring-bell-function #'ignore)) 
 
 
 
 #+end_src
+
+
 
 
 ** General Keybindings
@@ -131,8 +108,6 @@
     (global-set-key (kbd "C-x l") 'next-buffer)
 #+end_src
 
-#+RESULTS:
-: next-buffer
 
 
 ** FONTS and THEMES
@@ -299,68 +274,59 @@
 * PROGRAMMING AND LANGUAGE SERVER PROTOCOL (LSP)
 
 #+begin_src emacs-lisp
-    ;; Sync Emacs's PATH with your shell's PATH
-    ;; This is CRUCIAL for LSP to find the language servers.
-    (use-package exec-path-from-shell
-      :ensure t
-      :if (memq window-system '(mac ns x))
-      :config
-      (exec-path-from-shell-initialize))
+;; Sync Emacs's PATH with your shell's PATH
+;; This is CRUCIAL for LSP to find the language servers.
+(use-package exec-path-from-shell
+  :ensure t
+  :if (memq window-system '(mac ns x))
+  :config
+  (exec-path-from-shell-initialize))
 
+(use-package lsp-mode
+  :ensure t
+  :commands lsp-deferred
+  :hook (prog-mode . lsp-deferred)
+  :init
+  ;; Set the keybinding prefix for LSP commands
+  (setq lsp-keymap-prefix "C-c l")
+  ;; Set reasonable defaults for responsiveness
+  (setq lsp-idle-delay 0.3)
+  (setq lsp-enable-file-watchers t)
+  :config
+  (lsp-enable-which-key-integration t))
 
+;; UI enhancements for LSP, like pop-up docs and sideline info
+(use-package lsp-ui
+  :ensure t
+  :commands lsp-ui-mode
+  :after lsp-mode
+  :hook (lsp-mode . lsp-ui-mode)
+  :custom
+  (lsp-ui-doc-position 'bottom)
+  (lsp-ui-doc-enable t)      ; Enable documentation pop-ups
+  (lsp-ui-sideline-enable t)) ; Enable sideline information
 
-  (use-package lsp-mode
+;; Installs and manages language servers automatically
+(use-package lsp-pyright
     :ensure t
-    :commands lsp-deferred
-    :hook (prog-mode . lsp-deferred)
-    :init
-    (setq lsp-keymap-prefix "C-c l")
-    (setq lsp-auto-guess-root t)
-    :config
-    (lsp-enable-which-key-integration t))
+    :hook (python-mode . (lambda ()
+                          (require 'lsp-pyright)
+                          (lsp-deferred))))
+
+;; Completion framework that will show suggestions from the LSP
+(use-package company
+  :ensure t
+  :after lsp-mode
+  :hook (prog-mode . company-mode) ; Use company in all programming modes
+ :bind (:map company-active-map
+         ("<tab>" . company-complete-selection))
+  :custom
+  (company-minimum-prefix-length 1) ; Show completions after 1 character
+  (company-idle-delay 0.2))         ; Show completions after 0.2s of idle time
 
 
-
-
-    ;; UI enhancements for LSP, like pop-up docs and sideline info
-    (use-package lsp-ui
-      :ensure t
-      :commands lsp-ui-mode
-      :after lsp-mode
-      :hook (lsp-mode . lsp-ui-mode)
-      :custom
-      (lsp-ui-doc-position 'bottom))
-
-    ;; Installs and manages language servers automatically
-    (use-package lsp-pyright
-        :ensure t
-        :hook (python-mode . (lambda ()
-                              (require 'lsp-pyright)
-                              (lsp-deferred))))
-
-    ;; Completion framework that will show suggestions from the LSP
-    (use-package company
-      :ensure t
-      :after lsp-mode
-      :hook (lsp-mode . company-mode)
-      :bind (:map company-active-map
-             ("<tab>" . company-complete-selection))
-      :custom
-      (company-minimum-prefix-length 1)
-      (company-idle-delay 0.0))
-
-
-
-  ;; slow stuff down hopefully 
-    (setq lsp-idle-delay 1.0)
-    (setq lsp-enable-file-watchers nil)
-    (setq lsp-ui-doc-enable nil)
-    (setq lsp-ui-sideline-enable nil)
-    (setq company-idle-delay 0.5)
-    (setq company-minimum-prefix-length 2)
 
 #+end_src
-
 
 
 * TEXT EDITING
@@ -373,9 +339,12 @@
          (text-mode . smartparens-mode)
          (markdown-mode . smartparens-mode))
   :config
-  (require 'smartparens-config))
+  ;; This ensures smartparens is fully configured upon loading
+  (require 'smartparens-config)
+  ;; This turns on the global mode for automatic pair management
+  (smartparens-global-mode 1))
+#+end_src
 
-  #+end_src
 
 
 
@@ -403,45 +372,49 @@
 * NEOTREE
 
 #+begin_src emacs-lisp
-  (use-package neotree
-    :ensure t
-    :after all-the-icons
-    :init
-    ;; Open NeoTree automatically on startup (optional)
-    ;; (add-hook 'emacs-startup-hook #'neotree-show)
+      (use-package neotree
+        :ensure t
+        :after all-the-icons
+        :init
+        ;; Open NeoTree automatically on startup (optional)
+        ;; (add-hook 'emacs-startup-hook #'neotree-show)
+       
+        :config
 
-    :config
-    ;; NeoTree width
-    (setq neo-window-width 35)
+        ;; NeoTree width
+        (setq neo-window-width 35)
 
-    ;; Use icons if you have `all-the-icons`
-    (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
+        ;; Use icons if you have `all-the-icons`
+        (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
 
-    ;; Follow the current file automatically
-    (setq neo-smart-open t)
+        ;; Follow the current file automatically
+        (setq neo-smart-open t)
 
-    ;; Always reuse the same window for NeoTree
-    (setq neo-window-fixed-size t)
+        ;; Always reuse the same window for NeoTree
+        (setq neo-window-fixed-size t)
 
-    ;; Auto-refresh NeoTree when files change
-    (setq neo-autorefresh t)
+        ;; Auto-refresh NeoTree when files change
+        (setq neo-autorefresh t)
 
-    ;; Make NeoTree respect Evil
-    (add-hook 'neotree-mode-hook
-              (lambda ()
-                (evil-normalize-keymaps)))
+        ;; Make NeoTree respect Evil
+        (add-hook 'neotree-mode-hook
+                  (lambda ()
+                    (evil-normalize-keymaps)))
 
-    ;; Bind a key to toggle NeoTree
-    (evil-define-key 'normal 'global (kbd "C-f") 'neotree-toggle)
-(with-eval-after-load 'neotree
-  (evil-define-key 'normal neotree-mode-map
-    (kbd "RET") 'neotree-enter
-    (kbd "l") 'neotree-enter
-    (kbd "h") 'neotree-select-up-node))
+        ;; Bind a key to toggle NeoTree
+        (evil-define-key 'normal 'global (kbd "C-f") 'neotree-toggle)
+    (with-eval-after-load 'neotree
+      (evil-define-key 'normal neotree-mode-map
+        (kbd "RET") 'neotree-enter
+        (kbd "l") 'neotree-enter
+        (kbd "h") 'neotree-select-up-node))
 
-  )
+      )
 
 #+end_src
+
+
+
 
 
 
