@@ -53,6 +53,7 @@
         (setq evil-vsplit-window-right t)
         (setq evil-undo-system 'undo-redo)
 	(setq evil-split-window-below t)
+	(setq evil-want-abbrev-mode nil)
         :config
         (evil-mode 1)))
 
@@ -60,6 +61,7 @@
       (use-package evil-collection
         :after evil
         :ensure t
+	:demand t
         :config
         ;; This will initialize evil-collection for all supported packages,
         ;; including ibuffer. It's the recommended way.
@@ -83,6 +85,11 @@
 ;; Cycle buffers with H and L
   (global-set-key (kbd "C-x h") 'previous-buffer)
   (global-set-key (kbd "C-x l") 'next-buffer)
+  ;; Map Ctrl+Tab to next buffer
+  (global-set-key (kbd "<C-tab>") 'next-buffer)
+
+  ;; Map Ctrl+Shift+Tab to previous buffer
+  (global-set-key (kbd "<C-S-iso-lefttab>") 'previous-buffer)
 
 (set-face-attribute 'default nil
     :font "JetBrains Mono"
@@ -155,8 +162,6 @@
 	  which-key-allow-imprecise-window-fit t
 	  which-key-separator " → " ))
 
-(global-set-key (kbd "C-x C-b") 'ibuffer)
-
 (use-package vterm
   :ensure t
   :custom
@@ -199,54 +204,74 @@
   (desktop-save-mode 1))
 
 ;; Sync Emacs's PATH with your shell's PATH
-;; This is CRUCIAL for LSP to find the language servers.
-(use-package exec-path-from-shell
-  :ensure t
-  :if (memq window-system '(mac ns x))
-  :config
-  (exec-path-from-shell-initialize))
+    ;; This is CRUCIAL for LSP to find the language servers.
+    (use-package exec-path-from-shell
+      :ensure t
+      :if (memq window-system '(mac ns x))
+      :config
+      (exec-path-from-shell-initialize))
 
-(use-package lsp-mode
-  :ensure t
-  :commands lsp-deferred
-  :hook (prog-mode . lsp-deferred)
-  :init
-  ;; Set the keybinding prefix for LSP commands
-  (setq lsp-keymap-prefix "C-c l")
-  ;; Set reasonable defaults for responsiveness
-  (setq lsp-idle-delay 0.3)
-  (setq lsp-enable-file-watchers t)
-  :config
-  (lsp-enable-which-key-integration t))
+    (use-package lsp-mode
+      :ensure t
+      :commands lsp-deferred
+      :hook (prog-mode . lsp-deferred)
+      :init
+      ;; Set the keybinding prefix for LSP commands
+      (setq lsp-keymap-prefix "C-c l")
+      ;; Set reasonable defaults for responsiveness
+      (setq lsp-idle-delay 0.3)
+      (setq lsp-enable-file-watchers t)
+      :config
+      (lsp-enable-which-key-integration t))
 
-;; UI enhancements for LSP, like pop-up docs and sideline info
-(use-package lsp-ui
-  :ensure t
-  :commands lsp-ui-mode
-  :after lsp-mode
-  :hook (lsp-mode . lsp-ui-mode)
-  :custom
-  (lsp-ui-doc-position 'bottom)
-  (lsp-ui-doc-enable t)      ; Enable documentation pop-ups
-  (lsp-ui-sideline-enable t)) ; Enable sideline information
+    ;; UI enhancements for LSP, like pop-up docs and sideline info
+    (use-package lsp-ui
+      :ensure t
+      :commands lsp-ui-mode
+      :after lsp-mode
+      :hook (lsp-mode . lsp-ui-mode)
+      :custom
+      (lsp-ui-doc-position 'bottom)
+      (lsp-ui-doc-enable t)      ; Enable documentation pop-ups
+      (lsp-ui-sideline-enable t)) ; Enable sideline information
 
-;; Installs and manages language servers automatically
-(use-package lsp-pyright
+    ;; Installs and manages language servers automatically
+    (use-package lsp-pyright
+        :ensure t
+        :hook (python-mode . (lambda ()
+                              (require 'lsp-pyright)
+                              (lsp-deferred))))
+(add-hook 'c-mode-hook 'lsp-deferred)
+(add-hook 'c++-mode-hook 'lsp-deferred)
+(add-hook 'objc-mode-hook 'lsp-deferred)    
+  (use-package lsp-javascript
     :ensure t
-    :hook (python-mode . (lambda ()
-                          (require 'lsp-pyright)
-                          (lsp-deferred))))
+    :hook ((js-mode js2-mode typescript-mode tsx-ts-mode js-ts-mode) . (lambda ()
+                                                                          (require 'lsp-javascript)
+                                                                          (lsp-deferred))))
 
-;; Completion framework that will show suggestions from the LSP
-(use-package company
+
+;; Better modes for JS / TS
+(use-package js2-mode
   :ensure t
-  :after lsp-mode
-  :hook (prog-mode . company-mode) ; Use company in all programming modes
- :bind (:map company-active-map
-         ("<tab>" . company-complete-selection))
-  :custom
-  (company-minimum-prefix-length 1) ; Show completions after 1 character
-  (company-idle-delay 0.2))         ; Show completions after 0.2s of idle time
+  :mode "\\.js\\'")
+
+(use-package typescript-mode
+  :ensure t
+  :mode "\\.ts\\'")
+
+
+
+    ;; Completion framework that will show suggestions from the LSP
+    (use-package company
+      :ensure t
+      :after lsp-mode
+      :hook (prog-mode . company-mode) ; Use company in all programming modes
+     :bind (:map company-active-map
+             ("<tab>" . company-complete-selection))
+      :custom
+      (company-minimum-prefix-length 1) ; Show completions after 1 character
+      (company-idle-delay 0.2))         ; Show completions after 0.2s of idle time
 
 (use-package smartparens
   :ensure t
@@ -331,3 +356,5 @@
         dashboard-center-content t)
   :config
   (dashboard-setup-startup-hook))
+
+(global-set-key (kbd "C-x C-b") 'ibuffer)
