@@ -481,14 +481,17 @@
 
 
 * Fuzzy finder FZF
-
+er
 #+begin_src emacs-lisp
-(use-package fzf
-  :ensure t
-  :bind
-  ;; Binds fzf to Ctrl+c f (standard Emacs style)
-  ("C-c f" . fzf))
+  (use-package fzf
+    :ensure t
+    :bind
+    ;; Binds fzf to Ctrl+c f (standard Emacs style)
+    ("C-c f" . fzf))
+    (global-set-key (kbd "C-c s") 'fzf-grep)
+    (global-set-key (kbd "C-x b") 'fzf-switch-buffer)
 #+end_src
+
 
 
 
