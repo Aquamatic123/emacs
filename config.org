@@ -467,7 +467,7 @@
 
     (setq dashboard-show-shortcuts nil)
     (setq dashboard-startup-banner 'logo
-          dashboard-center-content t)o
+          dashboard-center-content t)
     :config
     (dashboard-setup-startup-hook))
 
