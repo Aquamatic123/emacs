@@ -350,6 +350,7 @@
   (setq dashboard-display-icons-p t)
   (setq dashboard-icon-type 'all-the-icons)
 
+  (setq dashboard-projects-backend 'project-el)
 
   (setq dashboard-show-shortcuts nil)
   (setq dashboard-startup-banner 'logo
@@ -358,3 +359,11 @@
   (dashboard-setup-startup-hook))
 
 (global-set-key (kbd "C-x C-b") 'ibuffer)
+
+(use-package fzf
+  :ensure t
+  :bind
+  ;; Binds fzf to Ctrl+c f (standard Emacs style)
+  ("C-c f" . fzf))
+  (global-set-key (kbd "C-c s") 'fzf-grep)
+  (global-set-key (kbd "C-x b") 'fzf-switch-buffer)
