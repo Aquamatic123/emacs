@@ -137,6 +137,34 @@
 ;; Icons
   (use-package all-the-icons :ensure t)
 
+(use-package dired
+  :ensure nil
+  :commands (dired dired-jump)
+  :custom
+  ;; General dired options
+  (dired-listing-switches "-agho --group-directories-first")
+  :config
+  ;; Enable the command to reuse the same dired buffer (prevents buffer spam)
+  (put 'dired-find-alternate-file 'disabled nil)
+
+  ;; EVIL CONFIGURATION FOR DIRED
+  (with-eval-after-load 'evil
+    ;; Make sure dired starts in "Normal" state
+    (evil-set-initial-state 'dired-mode 'normal)
+
+    ;; Define specific keys for dired-mode in Normal state
+    (evil-define-key 'normal dired-mode-map
+      (kbd "h") 'dired-up-directory          ; Go up one directory
+      (kbd "l") 'dired-find-alternate-file   ; Enter directory (reuses buffer)
+      (kbd "RET") 'dired-find-alternate-file ; Enter directory (reuses buffer)
+      (kbd "m") 'dired-mark                  ; Mark file
+      (kbd "u") 'dired-unmark                ; Unmark file
+      (kbd "q") 'quit-window              ; Close dired
+	(kbd "R") 'dired-do-rename       ; Rename or Move
+      (kbd "C") 'dired-do-copy         ; Copy
+      (kbd "D") 'dired-do-delete       ; Delete
+      (kbd "+") 'dired-create-directory))) ; Create new folder
+
 (menu-bar-mode -1)
     (tool-bar-mode -1)
     (scroll-bar-mode -1)
