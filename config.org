@@ -279,79 +279,63 @@
 * PROGRAMMING AND LANGUAGE SERVER PROTOCOL (LSP)
 
 #+begin_src emacs-lisp
-    ;; Sync Emacs's PATH with your shell's PATH
-    ;; This is CRUCIAL for LSP to find the language servers.
-    (use-package exec-path-from-shell
-      :ensure t
-      :if (memq window-system '(mac ns x))
-      :config
-      (exec-path-from-shell-initialize))
-
-    (use-package lsp-mode
-      :ensure t
-      :commands lsp-deferred
-      :hook (prog-mode . lsp-deferred)
-      :init
-      ;; Set the keybinding prefix for LSP commands
-      (setq lsp-keymap-prefix "C-c l")
-      ;; Set reasonable defaults for responsiveness
-      (setq lsp-idle-delay 0.3)
-      (setq lsp-enable-file-watchers t)
-      :config
-      (lsp-enable-which-key-integration t))
-
-    ;; UI enhancements for LSP, like pop-up docs and sideline info
-    (use-package lsp-ui
-      :ensure t
-      :commands lsp-ui-mode
-      :after lsp-mode
-      :hook (lsp-mode . lsp-ui-mode)
-      :custom
-      (lsp-ui-doc-position 'bottom)
-      (lsp-ui-doc-enable t)      ; Enable documentation pop-ups
-      (lsp-ui-sideline-enable t)) ; Enable sideline information
-
-    ;; Installs and manages language servers automatically
-    (use-package lsp-pyright
-        :ensure t
-        :hook (python-mode . (lambda ()
-                              (require 'lsp-pyright)
-                              (lsp-deferred))))
-(add-hook 'c-mode-hook 'lsp-deferred)
-(add-hook 'c++-mode-hook 'lsp-deferred)
-(add-hook 'objc-mode-hook 'lsp-deferred)    
-  (use-package lsp-javascript
+  ;; 1. PATH SETUP (Unchanged, essential for Eglot to find servers)
+  (use-package exec-path-from-shell
     :ensure t
-    :hook ((js-mode js2-mode typescript-mode tsx-ts-mode js-ts-mode) . (lambda ()
-                                                                          (require 'lsp-javascript)
-                                                                          (lsp-deferred))))
+    :if (memq window-system '(mac ns x))
+    :config
+    (exec-path-from-shell-initialize))
 
 
-;; Better modes for JS / TS
-(use-package js2-mode
-  :ensure t
-  :mode "\\.js\\'")
+  
+  ;; 2. EGLOT (The new LSP client)
+  (use-package eglot
+    :ensure t
+    ;; Hook Eglot into the specific programming modes you use.
+    ;; 'eglot-ensure' starts the LSP session automatically.
+    :hook ((python-mode . eglot-ensure)
+           (c-mode . eglot-ensure)
+           (c++-mode . eglot-ensure)
+           (objc-mode . eglot-ensure)
+           (js-mode . eglot-ensure)
+           (js2-mode . eglot-ensure)
+           (typescript-mode . eglot-ensure)
+           (tsx-ts-mode . eglot-ensure))
+    :config
+    ;; Optimization: Disable the "events buffer" to improve performance
+    ;; in large projects (you likely won't need to read the raw protocol JSON).
+    (setq eglot-events-buffer-size 0)
+    
+    ;; Optional: Eglot usually guesses the server correctly, but you can
+    ;; configure specific servers here if needed.
+    ;; (add-to-list 'eglot-server-programs '((js-mode) "typescript-language-server" "--stdio"))
+    )
 
-(use-package typescript-mode
-  :ensure t
-  :mode "\\.ts\\'")
+  ;; 3. LANGUAGE MODES (Unchanged)
+  (use-package js2-mode
+    :ensure t
+    :mode "\\.js\\'")
 
+  (use-package typescript-mode
+    :ensure t
+    :mode "\\.ts\\'")
 
+  ;; 4. COMPLETION (Company)
+  ;; Eglot feeds data into Emacs's default completion system (capf).
+  ;; Company picks this up automatically.
+  (use-package company
+    :ensure t
+    ;; Removed ":after lsp-mode" since we aren't using it anymore
+    :hook (prog-mode . company-mode)
+    :bind (:map company-active-map
+           ("<tab>" . company-complete-selection))
+    :custom
+    (company-minimum-prefix-length 1)
+    (company-idle-delay 0.2))
 
-    ;; Completion framework that will show suggestions from the LSP
-    (use-package company
-      :ensure t
-      :after lsp-mode
-      :hook (prog-mode . company-mode) ; Use company in all programming modes
-     :bind (:map company-active-map
-             ("<tab>" . company-complete-selection))
-      :custom
-      (company-minimum-prefix-length 1) ; Show completions after 1 character
-      (company-idle-delay 0.2))         ; Show completions after 0.2s of idle time
+    
+ #+end_src
 
-
-
-#+end_src
 
 
 
