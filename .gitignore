@@ -8,10 +8,12 @@ url/
 .emacs.desktop
 .lsp-session-v1
 recentf
+eshell/
 # Compiled files
 *.elc
 *.lock
 
 # Backup files
 *~
+bookmarks
 
