@@ -363,22 +363,6 @@
 
 
 
-* File Explorer
-#+begin_src emacs-lisp
-(use-package dirvish
-  :ensure t
-  :init
-  (setq dirvish-attributes
-        '(file-size
-          subtree-state
-          collapse
-          vc-state
-          git-msg
-          file-time))
-  (dirvish-override-dired-mode))
-
-#+end_src
-
 
 
 * NEOTREE

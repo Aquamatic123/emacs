@@ -269,18 +269,6 @@
   ;; This turns on the global mode for automatic pair management
   (smartparens-global-mode 1))
 
-(use-package dirvish
-  :ensure t
-  :init
-  (setq dirvish-attributes
-        '(file-size
-          subtree-state
-          collapse
-          vc-state
-          git-msg
-          file-time))
-  (dirvish-override-dired-mode))
-
 (use-package neotree
     :ensure t
     :after all-the-icons
