@@ -166,7 +166,8 @@
       (kbd "D") 'dired-do-delete       ; Delete
       (kbd "+") 'dired-create-directory))) ; Create new folder
 
-(menu-bar-mode -1)
+(add-to-list 'default-frame-alist '(undecorated . t))
+    (menu-bar-mode -1)
     (tool-bar-mode -1)
     (scroll-bar-mode -1)
 
