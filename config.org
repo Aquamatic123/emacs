@@ -152,9 +152,10 @@
 
 
     ;; theme of choice
-  (add-to-list 'custom-theme-load-path
-               "~/.config/emacs/themes/naga-blue/")
-  (load-theme 'naga-blue t)
+  (elpaca (naga-blue-theme :host github :repo "amolv06/naga-blue")
+  (load-theme 'naga-blue t))
+
+
   (use-package gruber-darker-theme
     :ensure t
     :config)
@@ -317,11 +318,14 @@
     :config
     (exec-path-from-shell-initialize))
 
-
+  (elpaca (flymake :inherit elpaca-menu-gnu-elpa))
+  (elpaca (jsonrpc :inherit elpaca-menu-gnu-elpa))
   
   ;; 2. EGLOT (The new LSP client)
   (use-package eglot
     :ensure t
+    :after flymake
+    :after jsonrpc
     ;; Hook Eglot into the specific programming modes you use.
     ;; 'eglot-ensure' starts the LSP session automatically.
     :hook ((python-mode . eglot-ensure)
