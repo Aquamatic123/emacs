@@ -113,7 +113,13 @@
 
     ;; Map Ctrl+Shift+Tab to previous buffer
     (global-set-key (kbd "<C-S-iso-lefttab>") 'previous-buffer)
+
+  ;; Compiling
+  (global-set-key (kbd "C-c c") 'compile)
+  (global-set-key (kbd "C-c v") 'recompile)
+
 #+end_src
+
 
 
 
