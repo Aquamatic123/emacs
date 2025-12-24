@@ -41,10 +41,11 @@
     (elpaca elpaca-use-package
       ;; Enable use-package :ensure support for Elpaca.
       (elpaca-use-package-mode))
+	(elpaca-wait)
 
     ;; ensure evil is installed first (blocks until done)
-    (elpaca evil
-      (use-package evil
+	(use-package evil
+	:ensure t
         :demand t
         :init
         (setq evil-want-C-u-scroll t)
@@ -55,9 +56,9 @@
 	(setq evil-split-window-below t)
 	(setq evil-want-abbrev-mode nil)
         :config
-        (evil-mode 1)))
+        (evil-mode 1))
 
-    (elpaca evil-collection
+    
       (use-package evil-collection
         :after evil
         :ensure t
@@ -65,17 +66,25 @@
         :config
         ;; This will initialize evil-collection for all supported packages,
         ;; including ibuffer. It's the recommended way.
-        (evil-collection-init)))
+        (evil-collection-init))
 
-    (elpaca evil-tutor
+    
       (use-package evil-tutor
+	:ensure t
         :after evil
-        :demand t))
+        :demand t)
 
     ;;Turns off elpaca-use-package-mode current declaration
     ;;Note this will cause evaluate the declaration immediately. It is not deferred.
     ;;Useful for configuring built-in emacs features.
     (use-package emacs :ensure nil :config (setq ring-bell-function #'ignore))
+
+;; We ensure these are updated from ELPA before Eglot tries to use the older built-ins
+(use-package jsonrpc :ensure t)
+(use-package flymake :ensure t)
+
+;; BLOCK UNTIL UPDATES ARE FINISHED
+(elpaca-wait)
 
 (elpaca general
 (use-package general
@@ -90,6 +99,10 @@
 
   ;; Map Ctrl+Shift+Tab to previous buffer
   (global-set-key (kbd "<C-S-iso-lefttab>") 'previous-buffer)
+
+;; Compiling
+(global-set-key (kbd "C-c c") 'compile)
+(global-set-key (kbd "C-c v") 'recompile)
 
 (set-face-attribute 'default nil
     :font "JetBrains Mono"
@@ -235,19 +248,15 @@
 
 ;; 1. PATH SETUP (Unchanged, essential for Eglot to find servers)
 (use-package exec-path-from-shell
-  :ensure t
+  :ensure t  
   :if (memq window-system '(mac ns x))
   :config
   (exec-path-from-shell-initialize))
 
-(elpaca (flymake :inherit elpaca-menu-gnu-elpa))
-(elpaca (jsonrpc :inherit elpaca-menu-gnu-elpa))
 
 ;; 2. EGLOT (The new LSP client)
 (use-package eglot
   :ensure t
-  :after flymake
-  :after jsonrpc
   ;; Hook Eglot into the specific programming modes you use.
   ;; 'eglot-ensure' starts the LSP session automatically.
   :hook ((python-mode . eglot-ensure)
@@ -257,6 +266,7 @@
          (js-mode . eglot-ensure)
          (js2-mode . eglot-ensure)
          (typescript-mode . eglot-ensure)
+	   (java-mode . eglot-ensure)
          (tsx-ts-mode . eglot-ensure))
   :config
   ;; Optimization: Disable the "events buffer" to improve performance

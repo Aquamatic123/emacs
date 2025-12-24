@@ -52,10 +52,11 @@
       (elpaca elpaca-use-package
         ;; Enable use-package :ensure support for Elpaca.
         (elpaca-use-package-mode))
+  	(elpaca-wait)
 
       ;; ensure evil is installed first (blocks until done)
-      (elpaca evil
-        (use-package evil
+  	(use-package evil
+  	:ensure t
           :demand t
           :init
           (setq evil-want-C-u-scroll t)
@@ -66,9 +67,9 @@
   	(setq evil-split-window-below t)
   	(setq evil-want-abbrev-mode nil)
           :config
-          (evil-mode 1)))
+          (evil-mode 1))
 
-      (elpaca evil-collection
+      
         (use-package evil-collection
           :after evil
           :ensure t
@@ -76,12 +77,13 @@
           :config
           ;; This will initialize evil-collection for all supported packages,
           ;; including ibuffer. It's the recommended way.
-          (evil-collection-init)))
+          (evil-collection-init))
 
-      (elpaca evil-tutor
+      
         (use-package evil-tutor
+  	:ensure t
           :after evil
-          :demand t))
+          :demand t)
 
       ;;Turns off elpaca-use-package-mode current declaration
       ;;Note this will cause evaluate the declaration immediately. It is not deferred.
@@ -90,8 +92,19 @@
 
 
 
+
 #+end_src
 
+** Flymake and jsonrpc fix
+#+begin_src emacs-lisp
+;; We ensure these are updated from ELPA before Eglot tries to use the older built-ins
+(use-package jsonrpc :ensure t)
+(use-package flymake :ensure t)
+
+;; BLOCK UNTIL UPDATES ARE FINISHED
+(elpaca-wait)
+  
+#+end_src
 
 
 
@@ -320,19 +333,15 @@
 #+begin_src emacs-lisp
     ;; 1. PATH SETUP (Unchanged, essential for Eglot to find servers)
     (use-package exec-path-from-shell
-      :ensure t
+      :ensure t  
       :if (memq window-system '(mac ns x))
       :config
       (exec-path-from-shell-initialize))
 
-    (elpaca (flymake :inherit elpaca-menu-gnu-elpa))
-    (elpaca (jsonrpc :inherit elpaca-menu-gnu-elpa))
     
     ;; 2. EGLOT (The new LSP client)
     (use-package eglot
       :ensure t
-      :after flymake
-      :after jsonrpc
       ;; Hook Eglot into the specific programming modes you use.
       ;; 'eglot-ensure' starts the LSP session automatically.
       :hook ((python-mode . eglot-ensure)
@@ -378,6 +387,7 @@
 
       
  #+end_src
+
 
 
 
