@@ -131,12 +131,23 @@
   (global-set-key (kbd "C-c c") 'compile)
   (global-set-key (kbd "C-c v") 'recompile)
 
+  ;; terminal (eshell)
+  (global-set-key (kbd "C-<return>") 
+    (lambda ()
+    (interactive)
+    (split-window-right)
+    (other-window 1)
+    (eshell)))
 #+end_src
 
 
+ 
 
 
 
+
+
+ 
 
 ** FONTS and THEMES
 

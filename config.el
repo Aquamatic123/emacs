@@ -104,6 +104,14 @@
 (global-set-key (kbd "C-c c") 'compile)
 (global-set-key (kbd "C-c v") 'recompile)
 
+;; terminal (eshell)
+(global-set-key (kbd "C-<return>") 
+  (lambda ()
+  (interactive)
+  (split-window-right)
+  (other-window 1)
+  (eshell)))
+
 (set-face-attribute 'default nil
     :font "JetBrains Mono"
     :height 110
