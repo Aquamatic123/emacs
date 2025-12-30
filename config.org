@@ -328,13 +328,16 @@
 * Save AND LOAD SESSIONS
 
 #+begin_src emacs-lisp
-;; Configure and enable desktop-save-mode
-(use-package desktop
-  :ensure nil ;; This is a built-in Emacs feature, no need to download
-  :config
-  ;; Actually turn on the mode
-  (desktop-save-mode 1))
+  ;; Configure and enable desktop-save-mode
+  (use-package desktop
+    :ensure nil ;; This is a built-in Emacs feature, no need to download
+    :config
+    ;; Actually turn on the mode
+    (desktop-save-mode 1))
+  ;; auto update buffers
+  (global-auto-revert-mode 1)
 #+end_src 
+
 
 
 
