@@ -182,13 +182,12 @@
 
 
     ;; theme of choice
-  (elpaca (naga-blue-theme :host github :repo "amolv06/naga-blue")
-  (load-theme 'naga-blue t))
+  ;; old theme (elpaca (naga-blue-theme :host github :repo "amolv06/naga-blue")
 
-
-  (use-package gruber-darker-theme
-    :ensure t
-    :config)
+  (use-package kanagawa-themes
+  :ensure t
+  :config
+  (load-theme 'kanagawa-wave t))
 
 
   ;; transparency
@@ -201,6 +200,8 @@
 
 
 #+end_src
+
+
 
 
 * Dired Configuration
