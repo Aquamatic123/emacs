@@ -282,6 +282,7 @@
   ;; in large projects (you likely won't need to read the raw protocol JSON).
   (setq eglot-events-buffer-size 0)
   
+  (add-to-list 'eglot-ignored-server-capabilities :documentOnTypeFormattingProvider)
   ;; Optional: Eglot usually guesses the server correctly, but you can
   ;; configure specific servers here if needed.
   ;; (add-to-list 'eglot-server-programs '((js-mode) "typescript-language-server" "--stdio"))
@@ -295,6 +296,12 @@
 (use-package typescript-mode
   :ensure t
   :mode "\\.ts\\'")
+
+;; Styles
+(setq c-default-style '((java-mode . "java")
+                      (c-mode    . "k&r")
+                      (c++-mode  . "stroustrup")
+                      (other     . "gnu")))
 
 ;; 4. COMPLETION (Company)
 ;; Eglot feeds data into Emacs's default completion system (capf).

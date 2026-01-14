@@ -346,61 +346,69 @@
 * PROGRAMMING AND LANGUAGE SERVER PROTOCOL (LSP)
 
 #+begin_src emacs-lisp
-    ;; 1. PATH SETUP (Unchanged, essential for Eglot to find servers)
-    (use-package exec-path-from-shell
-      :ensure t  
-      :if (memq window-system '(mac ns x))
-      :config
-      (exec-path-from-shell-initialize))
+  ;; 1. PATH SETUP (Unchanged, essential for Eglot to find servers)
+  (use-package exec-path-from-shell
+    :ensure t  
+    :if (memq window-system '(mac ns x))
+    :config
+    (exec-path-from-shell-initialize))
+
+
+  ;; 2. EGLOT (The new LSP client)
+  (use-package eglot
+    :ensure t
+    ;; Hook Eglot into the specific programming modes you use.
+    ;; 'eglot-ensure' starts the LSP session automatically.
+    :hook ((python-mode . eglot-ensure)
+           (c-mode . eglot-ensure)
+           (c++-mode . eglot-ensure)
+           (objc-mode . eglot-ensure)
+           (js-mode . eglot-ensure)
+           (js2-mode . eglot-ensure)
+           (typescript-mode . eglot-ensure)
+  	   (java-mode . eglot-ensure)
+           (tsx-ts-mode . eglot-ensure))
+    :config
+    ;; Optimization: Disable the "events buffer" to improve performance
+    ;; in large projects (you likely won't need to read the raw protocol JSON).
+    (setq eglot-events-buffer-size 0)
+    
+    ;; fixes styles. Basically removes server side handling
+    (add-to-list 'eglot-ignored-server-capabilities :documentOnTypeFormattingProvider)
+    ;; Optional: Eglot usually guesses the server correctly, but you can
+    ;; configure specific servers here if needed.
+    ;; (add-to-list 'eglot-server-programs '((js-mode) "typescript-language-server" "--stdio"))
+    )
+
+  ;; 3. LANGUAGE MODES (Unchanged)
+  (use-package js2-mode
+    :ensure t
+    :mode "\\.js\\'")
+
+  (use-package typescript-mode
+    :ensure t
+    :mode "\\.ts\\'")
+
+  ;; Styles
+  (setq c-default-style '((java-mode . "java")
+                        (c-mode    . "k&r")
+                        (c++-mode  . "stroustrup")
+                        (other     . "gnu")))
+
+  ;; 4. COMPLETION (Company)
+  ;; Eglot feeds data into Emacs's default completion system (capf).
+  ;; Company picks this up automatically.
+  (use-package company
+    :ensure t
+    ;; Removed ":after lsp-mode" since we aren't using it anymore
+    :hook (prog-mode . company-mode)
+    :bind (:map company-active-map
+           ("<tab>" . company-complete-selection))
+    :custom
+    (company-minimum-prefix-length 1)
+    (company-idle-delay 0.2))
 
     
-    ;; 2. EGLOT (The new LSP client)
-    (use-package eglot
-      :ensure t
-      ;; Hook Eglot into the specific programming modes you use.
-      ;; 'eglot-ensure' starts the LSP session automatically.
-      :hook ((python-mode . eglot-ensure)
-             (c-mode . eglot-ensure)
-             (c++-mode . eglot-ensure)
-             (objc-mode . eglot-ensure)
-             (js-mode . eglot-ensure)
-             (js2-mode . eglot-ensure)
-             (typescript-mode . eglot-ensure)
-  	   (java-mode . eglot-ensure)
-             (tsx-ts-mode . eglot-ensure))
-      :config
-      ;; Optimization: Disable the "events buffer" to improve performance
-      ;; in large projects (you likely won't need to read the raw protocol JSON).
-      (setq eglot-events-buffer-size 0)
-      
-      ;; Optional: Eglot usually guesses the server correctly, but you can
-      ;; configure specific servers here if needed.
-      ;; (add-to-list 'eglot-server-programs '((js-mode) "typescript-language-server" "--stdio"))
-      )
-
-    ;; 3. LANGUAGE MODES (Unchanged)
-    (use-package js2-mode
-      :ensure t
-      :mode "\\.js\\'")
-
-    (use-package typescript-mode
-      :ensure t
-      :mode "\\.ts\\'")
-
-    ;; 4. COMPLETION (Company)
-    ;; Eglot feeds data into Emacs's default completion system (capf).
-    ;; Company picks this up automatically.
-    (use-package company
-      :ensure t
-      ;; Removed ":after lsp-mode" since we aren't using it anymore
-      :hook (prog-mode . company-mode)
-      :bind (:map company-active-map
-             ("<tab>" . company-complete-selection))
-      :custom
-      (company-minimum-prefix-length 1)
-      (company-idle-delay 0.2))
-
-      
  #+end_src
 
 
@@ -408,6 +416,9 @@
 
 
 
+
+
+ 
 
 * TEXT EDITING
 
