@@ -282,6 +282,7 @@
   ;; in large projects (you likely won't need to read the raw protocol JSON).
   (setq eglot-events-buffer-size 0)
   
+  ;; fixes styles. Basically removes server side handling
   (add-to-list 'eglot-ignored-server-capabilities :documentOnTypeFormattingProvider)
   ;; Optional: Eglot usually guesses the server correctly, but you can
   ;; configure specific servers here if needed.
@@ -398,3 +399,10 @@
   ("C-c f" . fzf))
   (global-set-key (kbd "C-c s") 'fzf-grep)
   (global-set-key (kbd "C-x b") 'fzf-switch-buffer)
+
+(use-package transient :ensure t :demand t)
+  (use-package magit
+    :ensure t
+    :bind ("C-x g" . magit-status)
+    :config
+    )
