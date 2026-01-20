@@ -186,13 +186,14 @@
       (kbd "D") 'dired-do-delete       ; Delete
       (kbd "+") 'dired-create-directory))) ; Create new folder
 
-(add-to-list 'default-frame-alist '(undecorated . t))
-    (menu-bar-mode -1)
-    (tool-bar-mode -1)
-    (scroll-bar-mode -1)
+;; Uncomment this line to remove window decorations
+;;(add-to-list 'default-frame-alist '(undecorated . t))
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
 
 
- (setq display-line-numbers-type 'relative)
+(setq display-line-numbers-type 'relative)
 (global-display-line-numbers-mode 1)
 
 (use-package which-key
