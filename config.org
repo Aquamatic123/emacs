@@ -242,16 +242,18 @@
 ** GUI tweaks
 
 #+begin_src emacs-lisp
+;; Frame title
+(setq frame-title-format '("%b - Emacs@" user-login-name))
 
-  ;; Uncomment this line to remove window decorations
-  ;;(add-to-list 'default-frame-alist '(undecorated . t))
+;; Uncomment this line to remove window decorations
+;;(add-to-list 'default-frame-alist '(undecorated . t))
 
-  (menu-bar-mode -1)
-  (tool-bar-mode -1)
-  (scroll-bar-mode -1)
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
 
-  (setq display-line-numbers-type 'relative)
-  (global-display-line-numbers-mode 1)     
+(setq display-line-numbers-type 'relative)
+(global-display-line-numbers-mode 1)     
 +end_src 
 
 
