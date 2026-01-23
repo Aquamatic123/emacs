@@ -186,33 +186,6 @@
       (kbd "D") 'dired-do-delete       ; Delete
       (kbd "+") 'dired-create-directory))) ; Create new folder
 
-;; Uncomment this line to remove window decorations
-;;(add-to-list 'default-frame-alist '(undecorated . t))
-(menu-bar-mode -1)
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-
-
-(setq display-line-numbers-type 'relative)
-(global-display-line-numbers-mode 1)
-
-(use-package which-key
-  :init
-    (which-key-mode 1)
-  :config
-  (setq which-key-side-window-location 'bottom
-	  which-key-sort-order #'which-key-key-order-alpha
-	  which-key-sort-uppercase-first nil
-	  which-key-add-column-padding 1
-	  which-key-max-display-columns nil
-	  which-key-min-display-lines 6
-	  which-key-side-window-slot -10
-	  which-key-side-window-max-height 0.25
-	  which-key-idle-delay 0.8
-	  which-key-max-description-length 25
-	  which-key-allow-imprecise-window-fit t
-	  which-key-separator " → " ))
-
 (use-package vterm
   :ensure t
   :custom
@@ -305,18 +278,15 @@
                       (c++-mode  . "stroustrup")
                       (other     . "gnu")))
 
-;; 4. COMPLETION (Company)
-;; Eglot feeds data into Emacs's default completion system (capf).
-;; Company picks this up automatically.
+;; 4. completion (company)
+;; eglot feeds data into emacs's default completion system (capf).
+;; company picks this up automatically.
 (use-package company
   :ensure t
-  ;; Removed ":after lsp-mode" since we aren't using it anymore
+  ;; removed ":after lsp-mode" since we aren't using it anymore
   :hook (prog-mode . company-mode)
   :bind (:map company-active-map
-         ("<tab>" . company-complete-selection))
-  :custom
-  (company-minimum-prefix-length 1)
-  (company-idle-delay 0.2))
+         ("<tab>" . company-complete-selection)))
 
 (use-package smartparens
   :ensure t
