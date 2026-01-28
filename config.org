@@ -187,6 +187,7 @@
   (use-package kanagawa-themes
   :ensure t
   :config
+  ;; 1. wave 2. dragon (dark) 3. lotus (light)
   (load-theme 'kanagawa-wave t))
 
 
@@ -396,12 +397,12 @@
                         (c++-mode  . "stroustrup")
                         (other     . "gnu")))
 
-  ;; 4. completion (company)
-  ;; eglot feeds data into emacs's default completion system (capf).
-  ;; company picks this up automatically.
+  ;; 4. COMPLETION (Company)
+  ;; Eglot feeds data into Emacs's default completion system (capf).
+  ;; Company picks this up automatically.
   (use-package company
     :ensure t
-    ;; removed ":after lsp-mode" since we aren't using it anymore
+    ;; Removed ":after lsp-mode" since we aren't using it anymore
     :hook (prog-mode . company-mode)
     :bind (:map company-active-map
            ("<tab>" . company-complete-selection)))
