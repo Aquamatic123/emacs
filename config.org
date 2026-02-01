@@ -550,5 +550,10 @@
       )
 #+end_src
 
+** Manage backup files
+#+begin_src emacs-lisp
+  (setq backup-directory-alist `(("." . "~/.config/emacs/backups/")))
+#+end_src
+
 
 

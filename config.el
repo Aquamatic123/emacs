@@ -187,8 +187,6 @@
       (kbd "D") 'dired-do-delete       ; Delete
       (kbd "+") 'dired-create-directory))) ; Create new folder
 
-<<<<<<< HEAD
-=======
 ;; Frame title
 (setq frame-title-format '("%b - Emacs@" user-login-name))
 
@@ -219,7 +217,6 @@
 	  which-key-allow-imprecise-window-fit t
 	  which-key-separator " → " ))
 
->>>>>>> 4be824f (fix typo.)
 (use-package vterm
   :ensure t
   :custom
@@ -312,12 +309,12 @@
                       (c++-mode  . "stroustrup")
                       (other     . "gnu")))
 
-;; 4. completion (company)
-;; eglot feeds data into emacs's default completion system (capf).
-;; company picks this up automatically.
+;; 4. COMPLETION (Company)
+;; Eglot feeds data into Emacs's default completion system (capf).
+;; Company picks this up automatically.
 (use-package company
   :ensure t
-  ;; removed ":after lsp-mode" since we aren't using it anymore
+  ;; Removed ":after lsp-mode" since we aren't using it anymore
   :hook (prog-mode . company-mode)
   :bind (:map company-active-map
          ("<tab>" . company-complete-selection)))
@@ -411,3 +408,5 @@
     :bind ("C-x g" . magit-status)
     :config
     )
+
+(setq backup-directory-alist `(("." . "~/.config/emacs/backups/")))
