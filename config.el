@@ -280,7 +280,7 @@
          (js-mode . eglot-ensure)
          (js2-mode . eglot-ensure)
          (typescript-mode . eglot-ensure)
-	   (java-mode . eglot-ensure)
+  	 (java-mode . eglot-ensure)
          (tsx-ts-mode . eglot-ensure))
   :config
   ;; Optimization: Disable the "events buffer" to improve performance
@@ -305,19 +305,17 @@
 
 ;; Styles
 (setq c-default-style '((java-mode . "java")
-                      (c-mode    . "k&r")
-                      (c++-mode  . "stroustrup")
-                      (other     . "gnu")))
+                        (c-mode    . "k&r")
+                        (c++-mode  . "stroustrup")
+                        (other     . "gnu")))
 
 ;; 4. COMPLETION (Company)
-;; Eglot feeds data into Emacs's default completion system (capf).
-;; Company picks this up automatically.
 (use-package company
   :ensure t
-  ;; Removed ":after lsp-mode" since we aren't using it anymore
-  :hook (prog-mode . company-mode)
   :bind (:map company-active-map
-         ("<tab>" . company-complete-selection)))
+		("<tab>" . company-complete-selection))
+  :config
+  (global-company-mode 1))
 
 (use-package smartparens
   :ensure t
