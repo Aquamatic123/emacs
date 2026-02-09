@@ -279,8 +279,8 @@
          (objc-mode . eglot-ensure)
          (js-mode . eglot-ensure)
          (js2-mode . eglot-ensure)
-         (typescript-mode . eglot-ensure)
-  	 (java-mode . eglot-ensure)
+	 (typescript-mode . eglot-ensure)
+	 (java-mode . eglot-ensure)
          (tsx-ts-mode . eglot-ensure))
   :config
   ;; Optimization: Disable the "events buffer" to improve performance
@@ -312,10 +312,21 @@
 ;; 4. COMPLETION (Company)
 (use-package company
   :ensure t
+  :demand t
   :bind (:map company-active-map
-		("<tab>" . company-complete-selection))
+	      ("<tab>" . company-complete-selection))
   :config
-  (global-company-mode 1))
+  (global-company-mode 1)
+  (setq company-minimum-prefix-length 1) ;; number of characters before suggestions
+  (setq company-idle-delay 0.0))   ;; time before suggestions
+
+;; company visuals
+(use-package company-box
+  :ensure t
+  :hook (company-mode . company-box-mode))
+
+(setq company-selection-wrap-around t
+	company-tooltip-align-annotations t)
 
 (use-package smartparens
   :ensure t
