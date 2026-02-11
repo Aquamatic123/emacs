@@ -174,6 +174,10 @@
   (setq minions-mode-line-lighter "...")
   ;; OR use a special character/icon if you prefer:
   ;; (setq minions-mode-line-lighter "☰")
+
+  ;; Shows errors
+  (setq minions-prominent-modes '(flymake-mode 
+                                compilation-mode))
   
   (minions-mode 1))
 
