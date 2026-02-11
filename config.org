@@ -215,7 +215,18 @@
     (moody-replace-vc-mode))
 #+end_src
 
-
+*** Minions
+#+begin_src emacs-lisp
+  (use-package minions
+    :ensure t
+    :config
+    ;; simple text for the menu
+    (setq minions-mode-line-lighter "...")
+    ;; OR use a special character/icon if you prefer:
+    ;; (setq minions-mode-line-lighter "☰")
+    
+    (minions-mode 1))
+#+end_src
 
 * Dired Configuration
 #+begin_src emacs-lisp

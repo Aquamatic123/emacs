@@ -167,6 +167,16 @@
   (moody-replace-mode-line-buffer-identification)
   (moody-replace-vc-mode))
 
+(use-package minions
+  :ensure t
+  :config
+  ;; simple text for the menu
+  (setq minions-mode-line-lighter "...")
+  ;; OR use a special character/icon if you prefer:
+  ;; (setq minions-mode-line-lighter "☰")
+  
+  (minions-mode 1))
+
 (use-package dired
   :ensure nil
   :commands (dired dired-jump)
