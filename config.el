@@ -150,6 +150,7 @@
 ;; 1. wave 2. dragon (dark) 3. lotus (light)
 (load-theme 'kanagawa-wave t))
 
+(elpaca-wait)
 
 ;; transparency
   (set-frame-parameter nil 'alpha-background 100) ; For current frame
@@ -158,6 +159,13 @@
 
 ;; Icons
   (use-package all-the-icons :ensure t)
+
+(use-package moody
+  :ensure t
+  :config
+  (moody-replace-mode-line-front-space)
+  (moody-replace-mode-line-buffer-identification)
+  (moody-replace-vc-mode))
 
 (use-package dired
   :ensure nil
@@ -384,12 +392,13 @@
   :init
   ;; Optional settings
   (setq dashboard-items '((recents   . 5)
-                        (bookmarks . 5)
-                        (projects  . 5)
-                        (agenda    . 5)))
+                          (bookmarks . 5)
+                          (projects  . 5)
+                          (agenda    . 5)))
   ;; ICONS
   (setq dashboard-set-heading-icons t)
   (setq dashboard-set-file-icons t)
+  (setq dashboard-set-modeline t)
   (setq dashboard-display-icons-p t)
   (setq dashboard-icon-type 'all-the-icons)
 
