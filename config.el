@@ -273,15 +273,6 @@
 
 (global-set-key (kbd "C-x <return>") 'my/vterm-toggle-or-create)
 
-;; Configure and enable desktop-save-mode
-(use-package desktop
-  :ensure nil ;; This is a built-in Emacs feature, no need to download
-  :config
-  ;; Actually turn on the mode
-  (desktop-save-mode 1))
-;; auto update buffers
-(global-auto-revert-mode 1)
-
 ;; 1. PATH SETUP (Unchanged, essential for Eglot to find servers)
 (use-package exec-path-from-shell
   :ensure t  
@@ -446,3 +437,14 @@
 	kept-new-versions 6
 	kept-old-versions 2
 	version-control t)
+
+;; Block until all packages are loaded
+(elpaca-wait)
+;; Configure and enable desktop-save-mode
+(use-package desktop
+  :ensure nil ;; This is a built-in Emacs feature, no need to download
+  :config
+  ;; Actually turn on the mode
+  (desktop-save-mode 1))
+;; auto update buffers
+(global-auto-revert-mode 1)

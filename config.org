@@ -263,10 +263,6 @@
         (kbd "+") 'dired-create-directory))) ; Create new folder
 #+end_src
 
-
-
-
-
 ** GUI tweaks
 
 #+begin_src emacs-lisp
@@ -307,11 +303,6 @@
 
 #+end_src 
 
-
-
-
-
-
 * SHELLS AND TERMINALS
 
 #+begin_src emacs-lisp
@@ -349,28 +340,6 @@
 
 (global-set-key (kbd "C-x <return>") 'my/vterm-toggle-or-create)
 #+end_src
-
-
-
-
-
-
-* Save AND LOAD SESSIONS
-
-#+begin_src emacs-lisp
-  ;; Configure and enable desktop-save-mode
-  (use-package desktop
-    :ensure nil ;; This is a built-in Emacs feature, no need to download
-    :config
-    ;; Actually turn on the mode
-    (desktop-save-mode 1))
-  ;; auto update buffers
-  (global-auto-revert-mode 1)
-#+end_src 
-
-
-
-
 
 * PROGRAMMING AND LANGUAGE SERVER PROTOCOL (LSP)
 
@@ -445,15 +414,6 @@
 
  #+end_src
 
-
-
-
-
-
-
-
- 
-
 * TEXT EDITING
 
 #+begin_src emacs-lisp
@@ -469,14 +429,6 @@
   ;; This turns on the global mode for automatic pair management
   (smartparens-global-mode 1))
 #+end_src
-
-
-
-
-
-
-
-
 
 * NEOTREE
 
@@ -521,11 +473,6 @@
       )
 
 #+end_src
-
-
-
-
-
 
 * DASHBOARD
 #+begin_src emacs-lisp
@@ -594,5 +541,18 @@
 	version-control t)
 #+end_src
 
+* SAVE AND LOAD SESSIONS
 
+#+begin_src emacs-lisp
+  ;; Block until all packages are loaded
+  (elpaca-wait)
+  ;; Configure and enable desktop-save-mode
+  (use-package desktop
+    :ensure nil ;; This is a built-in Emacs feature, no need to download
+    :config
+    ;; Actually turn on the mode
+    (desktop-save-mode 1))
+  ;; auto update buffers
+  (global-auto-revert-mode 1)
+#+end_src 
 
