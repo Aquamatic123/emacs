@@ -300,6 +300,9 @@
   ;; in large projects (you likely won't need to read the raw protocol JSON).
   (setq eglot-events-buffer-size 0)
   
+  ;; NEW: Completely disable jsonrpc logging for a massive speed boost
+  (fset #'jsonrpc--log-event #'ignore)
+
   ;; fixes styles. Basically removes server side handling
   (add-to-list 'eglot-ignored-server-capabilities :documentOnTypeFormattingProvider)
   ;; Optional: Eglot usually guesses the server correctly, but you can
@@ -330,8 +333,8 @@
 	      ("<tab>" . company-complete-selection))
   :config
   (global-company-mode 1)
-  (setq company-minimum-prefix-length 1) ;; number of characters before suggestions
-  (setq company-idle-delay 0.0))   ;; time before suggestions
+  (setq company-minimum-prefix-length 2) ;; number of characters before suggestions
+  (setq company-idle-delay 0.2))   ;; time before suggestions
 
 ;; company visuals
 (use-package company-box
