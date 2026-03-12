@@ -292,8 +292,8 @@
          (objc-mode . eglot-ensure)
          (js-mode . eglot-ensure)
          (js2-mode . eglot-ensure)
-	 (typescript-mode . eglot-ensure)
-	 (java-mode . eglot-ensure)
+  	 (typescript-mode . eglot-ensure)
+  	 (java-mode . eglot-ensure)
          (tsx-ts-mode . eglot-ensure))
   :config
   ;; Optimization: Disable the "events buffer" to improve performance
@@ -323,14 +323,23 @@
 (setq c-default-style '((java-mode . "java")
                         (c-mode    . "k&r")
                         (c++-mode  . "stroustrup")
-                        (other     . "gnu")))
+			  (other     . "gnu")))
+
+;; Haiku/General C-style character rules
+(defun my-c-mode-common-setup ()
+  "Set tab behavior for C, C++, and Java."
+  (setq indent-tabs-mode t)   ; Use real tabs
+  (setq tab-width 4)          ; 1 Tab = 4 spaces
+  (setq c-basic-offset 4))    ; Indent level matches tab width
+
+(add-hook 'c-mode-common-hook 'my-c-mode-common-setup)
 
 ;; 4. COMPLETION (Company)
 (use-package company
   :ensure t
   :demand t
   :bind (:map company-active-map
-	      ("<tab>" . company-complete-selection))
+  	      ("<tab>" . company-complete-selection))
   :config
   (global-company-mode 1)
   (setq company-minimum-prefix-length 2) ;; number of characters before suggestions
@@ -342,7 +351,7 @@
   :hook (company-mode . company-box-mode))
 
 (setq company-selection-wrap-around t
-	company-tooltip-align-annotations t)
+      company-tooltip-align-annotations t)
 
 (use-package smartparens
   :ensure t
