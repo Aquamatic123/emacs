@@ -327,7 +327,7 @@
 
 ;; Haiku/General C-style character rules
 (defun my-c-mode-common-setup ()
-  "Set tab behavior for C, C++, and Java."
+  "Set tab behavior for C and C++."
   (setq indent-tabs-mode t)   ; Use real tabs
   (setq tab-width 4)          ; 1 Tab = 4 spaces
   (setq c-basic-offset 4))    ; Indent level matches tab width
