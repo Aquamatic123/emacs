@@ -1,4 +1,4 @@
-# Emacs Config
+# My Personal Emacs Config
 This is my up-to-date emacs configuration. 
 
 ## installation  
