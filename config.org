@@ -568,3 +568,12 @@
   (global-auto-revert-mode 1)
 #+end_src 
 
+** formatter
+
+#+begin_src emacs-lisp
+  (use-package apheleia
+    :ensure t
+    :init
+    (apheleia-global-mode +1))
+#+end_src
+

@@ -460,3 +460,8 @@
   (desktop-save-mode 1))
 ;; auto update buffers
 (global-auto-revert-mode 1)
+
+(use-package apheleia
+  :ensure t
+  :init
+  (apheleia-global-mode +1))
