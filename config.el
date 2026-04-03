@@ -461,7 +461,8 @@
 ;; auto update buffers
 (global-auto-revert-mode 1)
 
-(use-package apheleia
-  :ensure t
-  :init
-  (apheleia-global-mode +1))
+;; WILL HAVE TO ADJUST SETTINGS
+;;(use-package apheleia
+  ;;:ensure t
+  ;;:init
+  ;;(apheleia-global-mode +1))
