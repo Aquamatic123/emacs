@@ -1,4 +1,4 @@
-# I AM CURRENTLY TRYING OUT DOOM EMACS, THIS IS NO LONGER VALID
+# I AM CURRENTLY USING DOOM EMACS, THIS IS NO LONGER VALID
 # My Personal Emacs Config
 This is my up-to-date emacs configuration. 
 
