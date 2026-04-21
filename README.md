@@ -1,5 +1,5 @@
 # I AM CURRENTLY USING DOOM EMACS, THIS IS NO LONGER VALID!!!
-# My Personal Emacs Config
+# My Personal Emacs Config (no more)
 
 ## installation  
 ### Linux
